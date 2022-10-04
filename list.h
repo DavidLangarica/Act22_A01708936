@@ -224,6 +224,7 @@ T DoubleLinkedList<T>::last() const {
 template <class T>
 T DoubleLinkedList<T>::before(T val) const {
 	if (contains(val) == false){
+		// val isn't part of the list
 		throw NoSuchElement();
 	}
 
@@ -233,12 +234,14 @@ T DoubleLinkedList<T>::before(T val) const {
 		T temp_val;
 
 		if(val == head->value){
+			// val is the first element of the list
 			throw NoSuchElement();
 		}
 
 		while(prev_node){
 			
 			if (prev_node->value == val){
+				// the element of the current node matches the val number
 				temp_node = prev_node->previous;
 				temp_val = temp_node->value;
 				return temp_val;
@@ -265,13 +268,12 @@ T DoubleLinkedList<T>::after(T val) const {
 	}
 
 	else {
-		// val is on the list
 		Node<T> *next_node = head;
 		Node<T> *temp_node = NULL;
 		T temp_val;
 
 		while(next_node->next != NULL){
-			
+			// the element of the current node matches the val number
 			if (next_node->value == val){
 				temp_node = next_node->next;
 				temp_val = temp_node->value;
@@ -341,7 +343,7 @@ void DoubleLinkedList<T>::push_back(T val) {
 // Insert an element before the first occurrence of a certain value.
 //
 // @throws NoSuchelement, if lookingFor is not on the list.
-// @Complexity O(n), se ciclará tantas veces como la condición de no llegar al valor buscado
+// @Complexity O(n), se ciclará tantas veces como la condición de no llegar al valor buscado se cumpla.
 // =================================================================
 template <class T>
 void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
@@ -349,10 +351,12 @@ void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
 	Node<T> *new_node = new Node<T>(newVal);
 
 	if (head->value == lookingFor){
+		// if lookingFor is in the first node
 		push_front(newVal);
 	}
 
 	else if (contains(lookingFor) == false){
+		// If lookingFor doesn't match any element from the list
 		throw NoSuchElement();
 	}
 
@@ -361,6 +365,7 @@ void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
 		temp_node = head;
 
 		while (temp_node->value != lookingFor){
+			// Move to the desired node
 			temp_node = temp_node->next;
 		}
 		
@@ -388,6 +393,7 @@ void DoubleLinkedList<T>::insert_after(T lookingFor, T newVal) {
 	Node<T> *new_node = new Node<T>(newVal);
 
 	if (contains(lookingFor) == false){
+		// lookingFor is not part of the list
 		throw NoSuchElement();
 	}
 
@@ -396,6 +402,7 @@ void DoubleLinkedList<T>::insert_after(T lookingFor, T newVal) {
 		temp_node = head;
 
 		while (temp_node->value != lookingFor){
+			// Move to the desired node
 			temp_node = temp_node->next;
 		}
 
