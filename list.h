@@ -1,8 +1,8 @@
 // =================================================================
 //
 // File: list.h
-// Author:
-// Date:
+// Author: David René Langarica Hernández | A01708936
+// Date: 5 de octubre de 2022
 //
 // =================================================================
 #ifndef DOUBLELINKEDLIST_H
@@ -219,10 +219,34 @@ T DoubleLinkedList<T>::last() const {
 // Returns the value before the first occurrence if certain value.
 //
 // @throws NoSuchelement, if val is not on the list.
+// @Complexity O(n), depende de que no haya alguna interrupción, de esa forma el ciclo se ejecutará tantas veces como esto no pase.
 // =================================================================
 template <class T>
 T DoubleLinkedList<T>::before(T val) const {
-	
+	if (contains(val) == false){
+		throw NoSuchElement();
+	}
+
+	else {
+		Node<T> *prev_node = head;
+		Node<T> *temp_node = NULL;
+		T temp_val;
+
+		if(val == head->value){
+			throw NoSuchElement();
+		}
+
+		while(prev_node){
+			
+			if (prev_node->value == val){
+				temp_node = prev_node->previous;
+				temp_val = temp_node->value;
+				return temp_val;
+			}
+
+			prev_node = prev_node->next;
+		}
+	}
 	return val;
 }
 
@@ -230,10 +254,36 @@ T DoubleLinkedList<T>::before(T val) const {
 // Returns the value after the first occurrence of certain value.
 //
 // @throws NoSuchelement, if val is not on the list.
+// @Complexity O(n), solo existe un ciclo while que depende de la condición que el nodo siguiente al "next_node" no sea NULL, por lo que se
+// ciclará tantas veces sean necesarias mientras que la condición se cumpla.
 // =================================================================
 template <class T>
 T DoubleLinkedList<T>::after(T val) const {
-	
+	if (contains(val) == false){
+		// val is not on the list
+		throw NoSuchElement();
+	}
+
+	else {
+		// val is on the list
+		Node<T> *next_node = head;
+		Node<T> *temp_node = NULL;
+		T temp_val;
+
+		while(next_node->next != NULL){
+			
+			if (next_node->value == val){
+				temp_node = next_node->next;
+				temp_val = temp_node->value;
+				return temp_val;
+			}
+
+			next_node = next_node->next;
+		}
+
+		throw NoSuchElement();
+
+	}
 	return val;
 }
 
@@ -291,20 +341,81 @@ void DoubleLinkedList<T>::push_back(T val) {
 // Insert an element before the first occurrence of a certain value.
 //
 // @throws NoSuchelement, if lookingFor is not on the list.
+// @Complexity O(n), se ciclará tantas veces como la condición de no llegar al valor buscado
 // =================================================================
 template <class T>
 void DoubleLinkedList<T>::insert_before(T lookingFor, T newVal) {
-	// TO DO
+	Node<T> *temp_node;
+	Node<T> *new_node = new Node<T>(newVal);
+
+	if (head->value == lookingFor){
+		push_front(newVal);
+	}
+
+	else if (contains(lookingFor) == false){
+		throw NoSuchElement();
+	}
+
+	else {
+
+		temp_node = head;
+
+		while (temp_node->value != lookingFor){
+			temp_node = temp_node->next;
+		}
+		
+		new_node->previous = temp_node->previous;
+		temp_node->previous = new_node;
+
+		if (new_node->previous != NULL){
+			(new_node->previous)->next = new_node;
+			new_node->next = temp_node;
+		}
+
+		size++;
+	}
 }
 
 // =================================================================
 // Insert an element after the first occurrence of a certain value.
 //
 // @throws NoSuchelement, if lookingFor is not on the list.
+// @Complexity O(n), como el anterior, el ciclo while se ciclará tantas veces como no se cumpla la condición de llegar al valor buscado.
 // =================================================================
 template <class T>
 void DoubleLinkedList<T>::insert_after(T lookingFor, T newVal) {
-	// TO DO
+	Node<T> *temp_node;
+	Node<T> *new_node = new Node<T>(newVal);
+
+	if (contains(lookingFor) == false){
+		throw NoSuchElement();
+	}
+
+	else {
+
+		temp_node = head;
+
+		while (temp_node->value != lookingFor){
+			temp_node = temp_node->next;
+		}
+
+		if (temp_node->next == NULL){
+			push_back(newVal);
+		}
+
+		else{
+
+			new_node->next = temp_node->next;
+			temp_node->next = new_node;
+
+			if (new_node->next != NULL)
+			{
+				(new_node->next)->previous = new_node;
+				new_node->previous = temp_node;
+			}
+			size++;
+		}
+	}
 }
 
 // =================================================================
